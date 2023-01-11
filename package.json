@@ -2,10 +2,10 @@
   "name": "chatbot-ios-backend",
   "version": "0.0.1",
   "description": "chatbot-ios-backend",
-  "main": "src/server.mjs",
+  "main": "src/server.js",
   "scripts": {
-    "start": "node src/server.mjs",
-    "start:dev": "node --watch src/server.mjs"
+    "start": "node src/server.js",
+    "start:dev": "node --watch src/server.js"
   },
   "keywords": [],
   "author": "",

@@ -1,7 +1,7 @@
-import bodyParser from 'body-parser';
-import cors from 'cors';
-import dotenv from 'dotenv';
-import express from 'express';
+const express = require('express');
+const dotenv = require('dotenv');
+const bodyParser = require('body-parser');
+const cors = require('cors');
 
 dotenv.config({ path: `.env` });
 const PORT = process.env.PORT || 3001;
