@@ -16,7 +16,6 @@ const requestData = {
 };
 
 const OPEN_AI_API_KEY = process.env.CHAT_IOS_OPENAI_API_KEY;
-console.log(process.env.CHAT_IOS_OPENAI_API_KEY);
 
 const requestConfig = {
   headers: {
@@ -44,13 +43,11 @@ router.post('/prompt', async (req, res, next) => {
   /// then send as new prompt
   try {
     const aiResponse = await aiRequest('do you have a name?');
-    // console.log(aiResponse);
 
     res.status(200).json({
       message: aiResponse,
     });
   } catch (error) {
-    // console.error(error);
     res.status(400).json({
       error: error.message,
     });
