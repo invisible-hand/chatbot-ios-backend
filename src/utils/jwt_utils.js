@@ -1,5 +1,6 @@
 const JWT = require('jsonwebtoken');
 const createError = require('http-errors');
+const { authSchema } = require('./validation_schema');
 require('dotenv').config({ path: `.env.local` });
 
 module.exports = {
@@ -14,10 +15,26 @@ module.exports = {
       };
       JWT.sign(payload, secret, options, (error, token) => {
         if (error) {
-          return reject(error);
+          return reject(createError.InternalServerError());
         }
         resolve(token);
       });
+    });
+  },
+  verifyAccessToken: (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    if (!authHeader) {
+      return next(createError.Unauthorized());
+    }
+
+    const bearerToken = authSchema.split(' ');
+    const token = bearerToken[1];
+    JWT.verify(token, process.env.JWT_ACCESS_TOKEN_SECRET, (error, payload) => {
+      if (error) {
+        return next(createError.Unauthorized());
+      }
+      req.payload = payload;
+      next();
     });
   },
 };
