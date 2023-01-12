@@ -3,6 +3,7 @@ const router = express.Router();
 const createError = require('http-errors');
 const User = require('../models/User.model');
 const { authSchema } = require('../utils/validation_schema');
+const { signedAccessToken } = require('../utils/jwt_utils');
 
 router.post('/register', async (req, res, next) => {
   try {
@@ -12,11 +13,12 @@ router.post('/register', async (req, res, next) => {
     if (doesExist) {
       throw createError.Conflict(`${result.email} is already registered`);
     }
-    //TODO! HASH PASSWORD!
+
     const user = new User(result);
     const savedUser = await user.save();
+    const accessToken = await signedAccessToken(savedUser.id);
 
-    res.send(savedUser);
+    res.send({ accessToken });
   } catch (error) {
     if (error.isJoi === true) {
       error.status = 422;
