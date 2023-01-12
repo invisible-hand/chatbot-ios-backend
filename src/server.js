@@ -2,6 +2,8 @@ const express = require('express');
 const createError = require('http-errors');
 const dotenv = require('dotenv');
 
+require('./utils/init_mongodb');
+
 const AuthRoute = require('./routes/Auth.route');
 const AiRoutes = require('./routes/Ai.route');
 
