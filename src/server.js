@@ -11,6 +11,7 @@ dotenv.config({ path: `.env` });
 const PORT = process.env.PORT || 3001;
 
 const app = express();
+app.use(express.json());
 
 app.get('/', async (req, res, next) => {
   res.send('under development');
