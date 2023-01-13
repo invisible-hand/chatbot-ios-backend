@@ -1,6 +1,5 @@
 const JWT = require('jsonwebtoken');
 const createError = require('http-errors');
-const { authSchema } = require('./validation_schema');
 require('dotenv').config({ path: `.env.local` });
 
 module.exports = {
@@ -9,7 +8,7 @@ module.exports = {
       const payload = {};
       const secret = process.env.JWT_ACCESS_TOKEN_SECRET;
       const options = {
-        expiresIn: '1h',
+        expiresIn: '1M',
         issuer: 'we are',
         audience: userID,
       };
@@ -27,7 +26,11 @@ module.exports = {
       return next(createError.Unauthorized());
     }
 
-    const bearerToken = authSchema.split(' ');
+    const bearerToken = authHeader.split(' ');
+    if (bearerToken.length !== 2 || bearerToken[0] !== 'Bearer') {
+      return next(createError.Unauthorized());
+    }
+
     const token = bearerToken[1];
     JWT.verify(token, process.env.JWT_ACCESS_TOKEN_SECRET, (error, payload) => {
       if (error) {
@@ -44,7 +47,7 @@ module.exports = {
       const payload = {};
       const secret = process.env.JWT_REFRESH_TOKEN_SECRET;
       const options = {
-        expiresIn: '1d',
+        expiresIn: '6M',
         issuer: 'we are',
         audience: userID,
       };
