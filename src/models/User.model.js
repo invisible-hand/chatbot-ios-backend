@@ -1,9 +1,11 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
-const Schema = mongoose.Schema;
+const SALT_ROUNDS = 10;
+const TRIAL_PERIOD_DAYS = 7;
+const TRIAL_PERIOD = TRIAL_PERIOD_DAYS * 24 * 60 * 60 * 1000;
 
-const UserSchema = new Schema({
+const UserSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
@@ -14,11 +16,20 @@ const UserSchema = new Schema({
     type: String,
     required: true,
   },
+  created_date: {
+    type: Date,
+    required: true,
+    default: Date.now,
+  },
+  subscription_end_date: {
+    type: Date,
+    default: null,
+  },
 });
 
 UserSchema.pre('save', async function (next) {
   try {
-    const salt = await bcrypt.genSalt(10);
+    const salt = await bcrypt.genSalt(SALT_ROUNDS);
     const hashedPassword = await bcrypt.hash(this.password, salt);
     this.password = hashedPassword;
     next();
@@ -33,6 +44,21 @@ UserSchema.methods.isValidPassword = async function (password) {
   } catch (error) {
     throw error;
   }
+};
+
+UserSchema.methods.isTrialOver = function () {
+  const now = new Date();
+  const trialEnd = new Date(this.created_date.getTime() + TRIAL_PERIOD);
+  return now > trialEnd;
+};
+
+UserSchema.methods.isSubscriptionOver = function () {
+  const now = new Date();
+  return now > this.subscription_end_date;
+};
+
+UserSchema.methods.updateSubscriptionEndDate = function (newEndDate) {
+  this.subscription_end_date = newEndDate;
 };
 
 const User = mongoose.model('user', UserSchema);
