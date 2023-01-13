@@ -6,6 +6,7 @@ require('./utils/init_mongodb');
 
 const AuthRoute = require('./routes/Auth.route');
 const AiRoutes = require('./routes/Ai.route');
+const PaymentRoutes = require('./routes/payment.route');
 
 dotenv.config({ path: `.env` });
 const PORT = process.env.PORT || 3001;
@@ -13,12 +14,8 @@ const PORT = process.env.PORT || 3001;
 const app = express();
 app.use(express.json());
 
-app.get('/', async (req, res, next) => {
-  res.send('under development');
-});
-
 app.use('/auth', AuthRoute);
-
+app.use('/payment', PaymentRoutes);
 app.use('/ai', AiRoutes);
 
 app.use(async (req, res, next) => {
