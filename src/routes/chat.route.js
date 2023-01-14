@@ -5,16 +5,15 @@ const {
   messages,
   deleteTopic,
 } = require('../controllers/chat.controller');
-const { verifyAccessToken } = require('../utils/jwt_utils');
 
 const router = express.Router();
 
-router.post('/message', verifyAccessToken, message);
+router.post('/message', message);
 
-router.post('/topics', verifyAccessToken, topics);
+router.post('/topics', topics);
 
-router.delete('/topic', verifyAccessToken, deleteTopic);
+router.delete('/topic', deleteTopic);
 
-router.post('/messages', verifyAccessToken, messages);
+router.post('/messages', messages);
 
 module.exports = router;
