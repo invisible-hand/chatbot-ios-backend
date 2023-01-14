@@ -5,7 +5,7 @@ const dotenv = require('dotenv');
 require('./utils/init_mongodb');
 
 const AuthRoute = require('./routes/Auth.route');
-const AiRoutes = require('./routes/Ai.route');
+const ChatRoutes = require('./routes/chat.route');
 const PaymentRoutes = require('./routes/payment.route');
 
 dotenv.config({ path: `.env` });
@@ -16,7 +16,7 @@ app.use(express.json());
 
 app.use('/auth', AuthRoute);
 app.use('/payment', PaymentRoutes);
-app.use('/ai', AiRoutes);
+app.use('/chat', ChatRoutes);
 
 app.use(async (req, res, next) => {
   next(createError.NotFound());
