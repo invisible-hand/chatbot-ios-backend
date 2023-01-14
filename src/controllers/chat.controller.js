@@ -1,4 +1,4 @@
-const { messageSchema } = require('../utils/validation_schema');
+const { messageSchema, topicSchema } = require('../utils/validation_schema');
 const Chat = require('../models/chat.model');
 const { aiRequest } = require('../utils/ai_request');
 const createError = require('http-errors');
@@ -53,11 +53,32 @@ module.exports = {
       next(createError.InternalServerError('Failed to retrieve topics'));
     }
   },
-  messages: async (req, res, next) => {},
+  messages: async (req, res, next) => {
+    try {
+      const userId = req.payload.aud;
+      const { topic_id } = topicSchema.validateAsync(req.body);
+
+      const isTopicBelongsToUser = await Chat.exists({
+        user_id: userId,
+        topic_id,
+      });
+      if (!isTopicBelongsToUser) {
+        return next(createError.BadRequest('No such topic'));
+      }
+
+      const messages = await Chat.find(
+        { user_id: userId, topic_id },
+        'topic_id message message_id'
+      );
+      res.json(messages);
+    } catch (error) {
+      next(createError.InternalServerError('Failed to retrieve messages'));
+    }
+  },
   deleteTopic: async (req, res, next) => {
     try {
       const userId = req.payload.aud;
-      const { topic_id } = req.body;
+      const { topic_id } = topicSchema.validateAsync(req.body);
       const deleted = await Chat.deleteMany({
         topic_id: topic_id,
         user_id: userId,
