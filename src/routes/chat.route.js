@@ -11,10 +11,10 @@ const router = express.Router();
 
 router.post('/message', verifyAccessToken, message);
 
-router.post('/topics', topics);
+router.post('/topics', verifyAccessToken, topics);
 
-router.delete('/topic', deleteTopic);
+router.delete('/topic', verifyAccessToken, deleteTopic);
 
-router.post('/messages', messages);
+router.post('/messages', verifyAccessToken, messages);
 
 module.exports = router;
