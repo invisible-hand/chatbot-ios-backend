@@ -17,7 +17,7 @@ module.exports = {
       }
 
       const response = await axios.post(receiptVerificationUrl, {
-        receiptData,
+        'receipt-data': receiptData,
         password: process.env.APPLE_APP_STORE_CONNECT_PASSWORD,
       });
 
