@@ -2,17 +2,15 @@ const { messageSchema } = require('../utils/validation_schema');
 const Chat = require('../models/chat.model');
 const { aiRequest } = require('../utils/ai_request');
 const createError = require('http-errors');
+const mongoose = require('mongoose');
 
 const topicRequestPrefix =
   'What is the topic of this text in 5 words maximum?: ';
 
 module.exports = {
   message: async (req, res, next) => {
-    console.log('in message000');
-    const { message, topic_id } = req.body; //await messageSchema.validateAsync(req.body);
-    console.log('in message001');
+    const { message, topic_id } = await messageSchema.validateAsync(req.body);
     const userId = req.payload.aud;
-    console.log('in message002');
     try {
       let topic = null;
       let messages = message;
@@ -20,22 +18,19 @@ module.exports = {
         const topicRequest = `${topicRequestPrefix}${message}`;
         topic = await aiRequest(topicRequest);
       } else {
+        console.log(message);
         messages = await Chat.getLast10Messages(userId, topic_id, message);
       }
 
-      console.log('before request');
-      console.log('messages:' + messages);
       const response = await aiRequest(messages);
 
-      console.log('after request');
-      console.log('response: ' + response);
-      const { _id: message_id, topic_id: topic__id } = await Chat.createChat({
-        user_id: userId,
-        topic_id,
+      const { _id: message_id, topic_id: topic__id } = await Chat.createChat(
+        userId,
+        topic_id || mongoose.Types.ObjectId(),
         topic,
         message,
-        response,
-      });
+        response
+      );
 
       res.send({ message_id, topic_id: topic__id, response, topic });
     } catch (error) {
