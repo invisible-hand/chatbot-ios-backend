@@ -1,5 +1,4 @@
 const axios = require('axios');
-const { verifyAccessToken } = require('../utils/jwt_utils');
 const User = require('../models/User.model');
 const createError = require('http-errors');
 const Payment = require('../models/payment.model');
