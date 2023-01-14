@@ -5,4 +5,9 @@ const authSchema = Joi.object({
   password: Joi.string().min(8).required(),
 });
 
-module.exports = { authSchema };
+const messageSchema = Joi.object({
+  message: Joi.string().min(1).max(2000).required(),
+  topic_id: Joi.alternatives().try(Joi.string(), Joi.allow(null)).required(),
+});
+
+module.exports = { authSchema, messageSchema };
