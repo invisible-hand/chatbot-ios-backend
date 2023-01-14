@@ -47,8 +47,6 @@ module.exports = {
     try {
       const userId = req.payload.aud;
 
-      checkSubscription(userId, next);
-
       const topics = await Chat.find(
         { user_id: userId },
         'topic_id topic'
@@ -61,10 +59,6 @@ module.exports = {
   messages: async (req, res, next) => {
     try {
       const userId = req.payload.aud;
-
-      checkSubscription(userId, next);
-
-      const { topic_id } = topicSchema.validateAsync(req.body);
 
       const isTopicBelongsToUser = await Chat.exists({
         user_id: userId,
@@ -86,8 +80,6 @@ module.exports = {
   deleteTopic: async (req, res, next) => {
     try {
       const userId = req.payload.aud;
-
-      checkSubscription(userId, next);
 
       const { topic_id } = topicSchema.validateAsync(req.body);
       const deleted = await Chat.deleteMany({

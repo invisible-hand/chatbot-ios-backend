@@ -8,6 +8,7 @@ const AuthRoute = require('./routes/auth.route');
 const ChatRoutes = require('./routes/chat.route');
 const PaymentRoutes = require('./routes/payment.route');
 const { verifyAccessToken } = require('./utils/jwt_utils');
+const { checkSubscription } = require('./utils/check_subscription');
 
 dotenv.config({ path: `.env` });
 const PORT = process.env.PORT || 3001;
@@ -17,7 +18,7 @@ app.use(express.json());
 
 app.use('/auth', AuthRoute);
 app.use('/payment', verifyAccessToken, PaymentRoutes);
-app.use('/chat', verifyAccessToken, ChatRoutes);
+app.use('/chat', verifyAccessToken, checkSubscription, ChatRoutes);
 
 app.use(async (req, res, next) => {
   next(createError.NotFound());
