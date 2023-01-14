@@ -53,6 +53,9 @@ UserSchema.methods.isTrialOver = function () {
 };
 
 UserSchema.methods.isSubscriptionOver = function () {
+  if (!this.subscription_end_date) {
+    return false;
+  }
   const now = new Date();
   return now > this.subscription_end_date;
 };
