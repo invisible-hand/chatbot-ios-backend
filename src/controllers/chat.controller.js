@@ -18,7 +18,6 @@ module.exports = {
         const topicRequest = `${topicRequestPrefix}${message}`;
         topic = await aiRequest(topicRequest);
       } else {
-        console.log(message);
         messages = await Chat.getLast10Messages(userId, topic_id, message);
       }
 
@@ -34,7 +33,6 @@ module.exports = {
 
       res.send({ message_id, topic_id: topic__id, response, topic });
     } catch (error) {
-      console.log(error);
       if (error.isJoi !== true) {
         return next(createError.InternalServerError('Try again later.'));
       }
