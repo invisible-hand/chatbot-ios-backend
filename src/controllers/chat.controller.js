@@ -3,14 +3,18 @@ const Chat = require('../models/chat.model');
 const { aiRequest } = require('../utils/ai_request');
 const createError = require('http-errors');
 const mongoose = require('mongoose');
+const { checkSubscription } = require('../utils/check_subscription');
 
 const topicRequestPrefix =
   'What is the topic of this text in 5 words maximum?: ';
 
 module.exports = {
   message: async (req, res, next) => {
-    const userId = req.payload.aud;
     try {
+      const userId = req.payload.aud;
+
+      checkSubscription(userId, next);
+
       const { message, topic_id } = await messageSchema.validateAsync(req.body);
       let topic = null;
       let messages = message;
@@ -42,12 +46,13 @@ module.exports = {
   topics: async (req, res, next) => {
     try {
       const userId = req.payload.aud;
-      console.log(userId);
+
+      checkSubscription(userId, next);
+
       const topics = await Chat.find(
         { user_id: userId },
         'topic_id topic'
       ).distinct('topic topic_id');
-      console.log(topics);
       res.json(topics);
     } catch (error) {
       next(createError.InternalServerError('Failed to retrieve topics'));
@@ -56,6 +61,9 @@ module.exports = {
   messages: async (req, res, next) => {
     try {
       const userId = req.payload.aud;
+
+      checkSubscription(userId, next);
+
       const { topic_id } = topicSchema.validateAsync(req.body);
 
       const isTopicBelongsToUser = await Chat.exists({
@@ -78,6 +86,9 @@ module.exports = {
   deleteTopic: async (req, res, next) => {
     try {
       const userId = req.payload.aud;
+
+      checkSubscription(userId, next);
+
       const { topic_id } = topicSchema.validateAsync(req.body);
       const deleted = await Chat.deleteMany({
         topic_id: topic_id,
