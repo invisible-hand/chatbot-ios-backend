@@ -1,24 +1,13 @@
 const express = require('express');
 const createError = require('http-errors');
-const dotenv = require('dotenv');
+const routes = require('./routes/routes');
 
 require('./utils/init_mongodb');
-
-const AuthRoute = require('./routes/auth.route');
-const ChatRoutes = require('./routes/chat.route');
-const PaymentRoutes = require('./routes/payment.route');
-const { verifyAccessToken } = require('./utils/jwt_utils');
-const { checkSubscription } = require('./utils/check_subscription');
-
-dotenv.config({ path: `.env` });
-const PORT = process.env.PORT || 3001;
 
 const app = express();
 app.use(express.json());
 
-app.use('/auth', AuthRoute);
-app.use('/payment', verifyAccessToken, PaymentRoutes);
-app.use('/chat', verifyAccessToken, checkSubscription, ChatRoutes);
+routes(app);
 
 app.use(async (req, res, next) => {
   next(createError.NotFound());
@@ -33,6 +22,9 @@ app.use((err, req, res, next) => {
     },
   });
 });
+
+require('dotenv').config({ path: `.env` });
+const PORT = process.env.PORT || 3001;
 
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);
