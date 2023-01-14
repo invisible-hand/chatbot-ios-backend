@@ -4,7 +4,7 @@ const dotenv = require('dotenv');
 
 require('./utils/init_mongodb');
 
-const AuthRoute = require('./routes/Auth.route');
+const AuthRoute = require('./routes/auth.route');
 const ChatRoutes = require('./routes/chat.route');
 const PaymentRoutes = require('./routes/payment.route');
 

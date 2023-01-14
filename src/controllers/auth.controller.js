@@ -1,5 +1,5 @@
 const createError = require('http-errors');
-const User = require('../models/User.model');
+const User = require('../models/user.model');
 const { authSchema } = require('../utils/validation_schema');
 const {
   signAccessToken,

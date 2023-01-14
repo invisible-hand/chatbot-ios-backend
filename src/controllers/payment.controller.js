@@ -1,5 +1,5 @@
 const axios = require('axios');
-const User = require('../models/User.model');
+const User = require('../models/user.model');
 const createError = require('http-errors');
 const Payment = require('../models/payment.model');
 require('dotenv').config({ path: '.env.local' });
