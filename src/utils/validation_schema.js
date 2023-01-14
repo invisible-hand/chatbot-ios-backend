@@ -13,4 +13,8 @@ const messageSchema = Joi.object({
   topic_id: Joi.alternatives().try(Joi.objectId(), Joi.allow(null)).required(),
 });
 
-module.exports = { authSchema, messageSchema };
+const topicSchema = Joi.object({
+  topic_id: Joi.alternatives().try(Joi.objectId(), Joi.allow(null)).required(),
+});
+
+module.exports = { authSchema, messageSchema, topicSchema };
