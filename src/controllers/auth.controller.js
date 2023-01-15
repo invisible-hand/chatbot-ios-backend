@@ -1,6 +1,7 @@
 const createError = require('http-errors');
 const User = require('../models/user.model');
 const { authSchema } = require('../utils/validation_schema');
+const { verifyAppleId } = require('../utils/verifyAppleToken');
 const {
   signAccessToken,
   signRefreshToken,
@@ -8,6 +9,34 @@ const {
 } = require('../utils/jwt_utils');
 
 module.exports = {
+  appleAuth: async (req, res, next) => {
+    try {
+      const { token } = req.body;
+      // const { token, email, apple_id } = req.body;
+      const verifiedUser = await verifyAppleId(token);
+
+      const { sub: apple_id, email } = verifiedUser;
+
+      let user = await User.findOne({ apple_id });
+
+      if (!user) {
+        user = new User({ apple_id, email });
+        await user.save();
+      } else if (user.email !== email) {
+        user.email = email;
+        await user.save();
+      }
+
+      const accessToken = await signAccessToken(user.id);
+      const refreshToken = await signRefreshToken(user.id);
+      res.send({ accessToken, refreshToken });
+    } catch (error) {
+      if (error.isJoi === true) {
+        return next(createError.BadRequest('Invalid token format'));
+      }
+      next(error);
+    }
+  },
   register: async (req, res, next) => {
     try {
       const result = await authSchema.validateAsync(req.body);
