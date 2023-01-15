@@ -1,16 +1,19 @@
 const express = require('express');
 const {
+  appleAuth,
+  // register,
+  // login,
   refreshToken,
   logout,
-  login,
-  register,
 } = require('../controllers/auth.controller');
 
 const router = express.Router();
 
-router.post('/register', register);
+router.post('/appleAuth', appleAuth);
 
-router.post('/login', login);
+// router.post('/register', register);
+
+// router.post('/login', login);
 
 router.post('/refresh-token', refreshToken);
 
