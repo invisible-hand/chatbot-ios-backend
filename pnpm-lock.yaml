@@ -10,6 +10,7 @@ specifiers:
   http-errors: ^2.0.0
   joi: ^17.7.0
   joi-objectid: ^4.0.2
+  jose: ^4.11.2
   jsonwebtoken: ^9.0.0
   mongoose: ^6.8.3
   uuid: ^9.0.0
@@ -24,6 +25,7 @@ dependencies:
   http-errors: 2.0.0
   joi: 17.7.0
   joi-objectid: 4.0.2
+  jose: 4.11.2
   jsonwebtoken: 9.0.0
   mongoose: 6.8.3
   uuid: 9.0.0
@@ -1401,6 +1403,10 @@ packages:
       '@sideway/address': 4.1.4
       '@sideway/formula': 3.0.1
       '@sideway/pinpoint': 2.0.0
+    dev: false
+
+  /jose/4.11.2:
+    resolution: {integrity: sha512-njj0VL2TsIxCtgzhO+9RRobBvws4oYyCM8TpvoUQwl/MbIM3NFJRR9+e6x0sS5xXaP1t6OCBkaBME98OV9zU5A==}
     dev: false
 
   /jsonwebtoken/9.0.0:
