@@ -6,16 +6,21 @@ const TRIAL_PERIOD_DAYS = 7;
 const TRIAL_PERIOD = TRIAL_PERIOD_DAYS * 24 * 60 * 60 * 1000;
 
 const UserSchema = new mongoose.Schema({
+  apple_id: {
+    type: String,
+    required: true,
+    unique: true,
+  },
   email: {
     type: String,
     required: true,
     lowercase: true,
     unique: true,
   },
-  password: {
-    type: String,
-    required: true,
-  },
+  // password: {
+  //   type: String,
+  //   required: true,
+  // },
   created_date: {
     type: Date,
     required: true,
