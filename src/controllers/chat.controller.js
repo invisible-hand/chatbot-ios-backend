@@ -3,7 +3,6 @@ const Chat = require('../models/chat.model');
 const { aiRequest } = require('../utils/ai_request');
 const createError = require('http-errors');
 const mongoose = require('mongoose');
-const { checkSubscription } = require('../utils/check_subscription');
 
 const topicRequestPrefix =
   'What is the topic of this text in 5 words maximum?: ';
@@ -46,9 +45,9 @@ module.exports = {
       const userId = req.payload.aud;
 
       const topics = await Chat.find(
-        { user_id: userId },
-        'topic_id topic'
-      ).distinct('topic topic_id');
+        { user_id: userId, topic: { $ne: null } },
+        'topic_id topic -_id'
+      );
       res.json(topics);
     } catch (error) {
       next(createError.InternalServerError('Failed to retrieve topics'));
