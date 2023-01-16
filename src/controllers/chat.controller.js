@@ -13,8 +13,6 @@ module.exports = {
     try {
       const userId = req.payload.aud;
 
-      checkSubscription(userId, next);
-
       const { message, topic_id } = await messageSchema.validateAsync(req.body);
       let topic = null;
       let messages = message;
