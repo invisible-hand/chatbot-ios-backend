@@ -1,6 +1,6 @@
 const crypto = require('node:crypto');
 
-const key1 = crypto.randomBytes(128).toString('hex');
-const key2 = crypto.randomBytes(128).toString('hex');
+const ACCESS_TOKEN_SECRET = crypto.randomBytes(128).toString('hex');
+const REFRESH_TOKEN_SECRET = crypto.randomBytes(128).toString('hex');
 
-console.table({ key1, key2 });
+console.table({ ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET });
