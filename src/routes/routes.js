@@ -7,5 +7,5 @@ const { checkSubscription } = require('../utils/check_subscription');
 module.exports = (app) => {
   app.use('/auth', AuthRoute);
   app.use('/payment', verifyAccessToken, PaymentRoutes);
-  app.use('/chat', verifyAccessToken, checkSubscription, ChatRoutes);
+  app.use('/chat', ChatRoutes);
 };

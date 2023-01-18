@@ -4,6 +4,7 @@ const {
   topics,
   messages,
   deleteTopic,
+  test
 } = require('../controllers/chat.controller');
 
 const router = express.Router();
@@ -15,5 +16,7 @@ router.post('/topics', topics);
 router.delete('/topic', deleteTopic);
 
 router.post('/messages', messages);
+
+// router.get('/test', test);
 
 module.exports = router;

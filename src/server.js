@@ -18,6 +18,7 @@ app.use((err, req, res, next) => {
   res.send({
     error: {
       status: err.status || 500,
+      funny: "test",
       message: err.message,
     },
   });
@@ -28,4 +29,5 @@ const PORT = process.env.PORT || 3001;
 
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);
+  console.log(`Testing`);
 });
