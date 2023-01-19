@@ -17,12 +17,14 @@ module.exports = {
       let messages = message;
       if (topic_id === null) {
         const topicRequest = `${topicRequestPrefix}${message}`;
-        topic = await aiRequest(topicRequest);
+        const rawTopic = await aiRequest(topicRequest);
+        topic = rawTopic.trim();
       } else {
         messages = await Chat.getLast10Messages(userId, topic_id, message);
       }
 
-      const response = await aiRequest(messages);
+      const rawResponse = await aiRequest(messages);
+      const response = rawResponse.trim();
 
       const { _id: message_id, topic_id: topic__id } = await Chat.createChat(
         userId,
