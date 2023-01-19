@@ -10,9 +10,9 @@ const requestData = {
   max_tokens: 3500,
 };
 
+require('dotenv').config({ path: `.env.local` });
 const OPEN_AI_API_KEY = process.env.CHAT_IOS_OPENAI_API_KEY;
 
-require('dotenv').config({ path: `.env.local` });
 const requestConfig = {
   headers: {
     Authorization: `Bearer ${OPEN_AI_API_KEY}`,
