@@ -11,27 +11,29 @@ const topicRequestPrefix =
 module.exports = {
   message: async (req, res, next) => {
     try {
-      const userId = "5f5d906f89d9b848b854eb24";
+      const userId = '5f5d906f89d9b848b854eb24';
 
       const { message, topic_id } = await messageSchema.validateAsync(req.body);
       let topic = null;
       let messages = message;
-      
-      console.log("CONSOLE: topic_id:", topic_id, "\n");
+
+      console.log('CONSOLE: topic_id:', topic_id, '\n');
 
       if (topic_id === null) {
         const topicRequest = `${topicRequestPrefix}${message}`;
-        topic = await aiRequest(topicRequest);
+        const rawTopic = await aiRequest(topicRequest);
+        const topic = rawTopic.trim();
       } else {
         messages = await Chat.getLast10Messages(userId, topic_id, message);
         topic = null;
       }
 
       // console.log("CONSOLE: topic:", topic, '; end-topic\n');
-      console.log("GOT MESSAGES:\n", messages, ";");
-      const response = await aiRequest(messages);
+      console.log('GOT MESSAGES:\n', messages, ';');
+      const rawResponse = await aiRequest(messages);
+      const response = rawResponse.trim();
 
-      console.log("GOT RESPONSE:\n", response);
+      console.log('GOT RESPONSE:\n', response);
 
       const { _id: message_id, topic_id: topic__id } = await Chat.createChat(
         userId,
@@ -41,11 +43,11 @@ module.exports = {
         response
       );
 
-      console.log("cool, ");
+      console.log('cool, ');
 
       res.send({ message_id, topic_id: topic__id, response, topic });
     } catch (error) {
-      console.log("got error", error);
+      console.log('got error', error);
       if (error.isJoi !== true) {
         return next(createError.InternalServerError('Try again later.'));
       }
@@ -54,7 +56,7 @@ module.exports = {
   },
   topics: async (req, res, next) => {
     try {
-      const userId = "5f5d906f89d9b848b854eb24";
+      const userId = '5f5d906f89d9b848b854eb24';
 
       const topics = await Chat.find(
         { user_id: userId, topic: { $ne: null } },
@@ -67,7 +69,7 @@ module.exports = {
   },
   messages: async (req, res, next) => {
     try {
-      const userId = "5f5d906f89d9b848b854eb24";
+      const userId = '5f5d906f89d9b848b854eb24';
 
       const isTopicBelongsToUser = await Chat.exists({
         user_id: userId,
@@ -88,7 +90,7 @@ module.exports = {
   },
   deleteTopic: async (req, res, next) => {
     try {
-      const userId = "5f5d906f89d9b848b854eb24";
+      const userId = '5f5d906f89d9b848b854eb24';
 
       const { topic_id } = topicSchema.validateAsync(req.body);
       const deleted = await Chat.deleteMany({
