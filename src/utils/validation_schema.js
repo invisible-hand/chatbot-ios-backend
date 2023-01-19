@@ -9,7 +9,7 @@ const authSchema = Joi.object({
 });
 
 const messageSchema = Joi.object({
-  message: Joi.string().min(1).max(2000).required(),
+  message: Joi.string().min(1).max(2500).replace(/\s+/g, ' ').max(500, 'words'),
   topic_id: Joi.alternatives().try(Joi.objectId(), Joi.allow(null)).required(),
 });
 
