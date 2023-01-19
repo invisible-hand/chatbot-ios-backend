@@ -31,8 +31,9 @@ const ChatSchema = new mongoose.Schema({
 });
 
 ChatSchema.pre('validate', async function (next) {
-  const existingChat = await Chat.findOne({ topic_id: this.topic_id });
-  if (!existingChat) {
+  // const existingChat = await Chat.findOne({ topic_id: this.topic_id });
+  if (this.topic_id === null) {
+    // if (!existingChat) {
     this.schema
       .path('topic')
       .required(true, 'Topic is required for first message');
