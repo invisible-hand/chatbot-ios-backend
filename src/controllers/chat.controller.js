@@ -3,6 +3,9 @@ const Chat = require('../models/chat.model');
 const { aiRequest } = require('../utils/ai_request');
 const createError = require('http-errors');
 const mongoose = require('mongoose');
+const {
+  concatenateMessagesAndResponses,
+} = require('../utils/context_compiler');
 
 const topicRequestPrefix =
   'What is the topic of this text in 5 words maximum?: ';
@@ -20,7 +23,8 @@ module.exports = {
         const rawTopic = await aiRequest(topicRequest);
         topic = rawTopic.trim();
       } else {
-        messages = await Chat.getLast10Messages(userId, topic_id, message);
+        const prevConversation = await Chat.getLast10Messages(userId, topic_id);
+        messages = concatenateMessagesAndResponses(prevConversation, message);
       }
 
       const rawResponse = await aiRequest(messages);
@@ -33,7 +37,6 @@ module.exports = {
         message,
         response
       );
-
       res.send({ message_id, topic_id: topic__id, response, topic });
     } catch (error) {
       if (error.isJoi !== true) {

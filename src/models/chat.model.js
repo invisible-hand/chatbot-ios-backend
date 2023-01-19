@@ -31,9 +31,7 @@ const ChatSchema = new mongoose.Schema({
 });
 
 ChatSchema.pre('validate', async function (next) {
-  // const existingChat = await Chat.findOne({ topic_id: this.topic_id });
   if (this.topic_id === null) {
-    // if (!existingChat) {
     this.schema
       .path('topic')
       .required(true, 'Topic is required for first message');
@@ -45,20 +43,15 @@ ChatSchema.statics.deleteByTopicId = function (topicId) {
   return this.deleteMany({ topic_id: topicId });
 };
 
-ChatSchema.statics.getLast10Messages = async function (
-  userId,
-  topic_id,
-  message_text
-) {
+ChatSchema.statics.getLast10Messages = async function (userId, topic_id) {
   const messages = await this.find({ user_id: userId, topic_id })
-    .sort({ created_date: -1 })
+    .sort({ created_date: 1 })
     .limit(10)
-    .select('message');
-  const joinedMessage = messages
-    .map((message) => `\n\nContext: ${message.message}`)
-    .join('\n')
-    .concat(`\nRequest: ${message_text}`);
-  return joinedMessage;
+    .select('message response');
+  return {
+    messages: messages.map((m) => m.message),
+    responses: messages.map((m) => m.response),
+  };
 };
 
 ChatSchema.statics.createChat = function (
