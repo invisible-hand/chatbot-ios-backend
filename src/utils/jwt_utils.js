@@ -2,13 +2,15 @@ const JWT = require('jsonwebtoken');
 const createError = require('http-errors');
 require('dotenv').config({ path: `.env.local` });
 
+const month = 30;
+
 module.exports = {
   signAccessToken: (userID) => {
     return new Promise((resolve, reject) => {
       const payload = {};
       const secret = process.env.JWT_ACCESS_TOKEN_SECRET;
       const options = {
-        expiresIn: '1M',
+        expiresIn: `${month * 1}d`,
         issuer: 'we are',
         audience: userID,
       };
@@ -47,7 +49,7 @@ module.exports = {
       const payload = {};
       const secret = process.env.JWT_REFRESH_TOKEN_SECRET;
       const options = {
-        expiresIn: '6M',
+        expiresIn: `${month * 6}d`,
         issuer: 'we are',
         audience: userID,
       };
