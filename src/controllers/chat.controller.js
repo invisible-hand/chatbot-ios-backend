@@ -52,7 +52,93 @@ module.exports = {
       const topics = await Chat.find(
         { user_id: userId, topic: { $ne: null } },
         'topic_id topic -_id'
-      );
+      ).sort({ topic_id: 1 });
+
+      // Get last message and response for each topic
+      const lastMessages = await Chat.find(
+        { user_id: userId },
+        'topic_id message response created_date'
+      )
+        .sort({ topic_id: 1, created_date: -1 })
+        .group({
+          _id: '$topic_id',
+          message: { $first: '$message' },
+          response: { $first: '$response' },
+          created_date: { $first: '$created_date' },
+        });
+
+      // Merge topic names and last messages
+      const response = topics.map((topic) => {
+        const lastMessage = lastMessages.find(
+          (message) => message._id.toString() === topic.topic_id.toString()
+        );
+        return {
+          ...topic,
+          message: lastMessage.message,
+          response: lastMessage.response,
+          created_date: lastMessage.created_date,
+        };
+      });
+
+      res.json(response);
+    } catch (error) {
+      next(createError.InternalServerError('Failed to retrieve topics'));
+    }
+  },
+  TEST_topics: async (req, res, next) => {
+    try {
+      const userId = req.payload.aud;
+      const pipeline = [
+        {
+          $match: {
+            user_id: mongoose.Types.ObjectId(userId),
+            topic: { $ne: null },
+          },
+        },
+        {
+          $lookup: {
+            from: 'chats',
+            let: { topic_id: '$topic_id' },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      { $eq: ['$topic_id', '$$topic_id'] },
+                      { $eq: ['$user_id', mongoose.Types.ObjectId(userId)] },
+                    ],
+                  },
+                },
+              },
+              {
+                $sort: { created_date: -1 },
+              },
+              {
+                $group: {
+                  _id: '$topic_id',
+                  message: { $first: '$message' },
+                  response: { $first: '$response' },
+                  created_date: { $first: '$created_date' },
+                },
+              },
+            ],
+            as: 'last_message',
+          },
+        },
+        {
+          $unwind: '$last_message',
+        },
+        {
+          $project: {
+            topic_id: 1,
+            topic: 1,
+            message: '$last_message.message',
+            response: '$last_message.response',
+            created_date: '$last_message.created_date',
+          },
+        },
+      ];
+      const topics = await Chat.aggregate(pipeline);
       res.json(topics);
     } catch (error) {
       next(createError.InternalServerError('Failed to retrieve topics'));
@@ -74,6 +160,32 @@ module.exports = {
         { user_id: userId, topic_id },
         'topic_id message message_id'
       );
+
+      // Get last message and response for each topic
+      const lastMessages = await Chat.find(
+        { user_id: userId },
+        'topic_id message response created_date'
+      )
+        .sort({ created_date: -1, topic_id: 1 })
+        .group({
+          _id: '$topic_id',
+          message: { $first: '$message' },
+          response: { $first: '$response' },
+          created_date: { $first: '$created_date' },
+        });
+
+      // Merge topic names and last messages
+      const response = topics.map((topic) => {
+        const lastMessage = lastMessages.find(
+          (message) => message._id.toString() === topic.topic_id.toString()
+        );
+        return {
+          ...topic,
+          message: lastMessage.message,
+          response: lastMessage.response,
+          created_date: lastMessage.created_date,
+        };
+      });
       res.json(messages);
     } catch (error) {
       next(createError.InternalServerError('Failed to retrieve messages'));
