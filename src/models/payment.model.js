@@ -23,6 +23,10 @@ const PaymentSchema = new mongoose.Schema({
     type: Date,
     required: true,
   },
+  price: {
+    type: Number,
+    required: true,
+  },
 });
 
 PaymentSchema.statics.addPayment = async function (
@@ -30,7 +34,8 @@ PaymentSchema.statics.addPayment = async function (
   receiptData,
   transactionId,
   purchaseDate,
-  expiresDate
+  expiresDate,
+  price
 ) {
   const payment = new this({
     user_id: userId,
@@ -38,6 +43,7 @@ PaymentSchema.statics.addPayment = async function (
     transaction_id: transactionId,
     purchase_date: purchaseDate,
     expires_date: expiresDate,
+    price,
   });
 
   return payment.save();
