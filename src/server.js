@@ -2,7 +2,7 @@ const express = require('express');
 const createError = require('http-errors');
 const routes = require('./routes/routes');
 
-require('./utils/init_mongodb');
+// require('./utils/init_mongodb');
 
 const app = express();
 app.use(express.json());

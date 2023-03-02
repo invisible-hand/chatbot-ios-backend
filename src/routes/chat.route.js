@@ -1,19 +1,22 @@
 const express = require('express');
 const {
-  message,
-  topics,
-  messages,
-  deleteTopic,
+  // message,
+  // topics,
+  // messages,
+  // deleteTopic,
+  chat,
 } = require('../controllers/chat.controller');
 
 const router = express.Router();
 
-router.post('/message', message);
+// router.post('/message', message);
 
-router.post('/topics', topics);
+router.post('/chat', chat);
 
-router.delete('/topic', deleteTopic);
+// router.post('/topics', topics);
 
-router.post('/messages', messages);
+// router.delete('/topic', deleteTopic);
+
+// router.post('/messages', messages);
 
 module.exports = router;
