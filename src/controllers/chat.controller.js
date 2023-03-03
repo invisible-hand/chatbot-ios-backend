@@ -15,7 +15,7 @@ module.exports = {
   chat: async (req, res, next) => {
     const { messages } = req.body;
 
-    if ((messages.length = 0)) {
+    if (messages.length === 0) {
       res.send({});
       return;
     }
