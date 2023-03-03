@@ -1,8 +1,10 @@
 // const { messageSchema, topicSchema } = require('../utils/validation_schema');
+const { chatSchema } = require('../utils/validation_schema');
+
 // const Chat = require('../models/chat.model');
 // const { aiRequest } = require('../utils/ai_request');
 const { aiChatRequest } = require('../utils/ai_chat_request');
-// const createError = require('http-errors');
+const createError = require('http-errors');
 // const mongoose = require('mongoose');
 // const {
 //   concatenateMessagesAndResponses,
@@ -13,19 +15,25 @@ const { aiChatRequest } = require('../utils/ai_chat_request');
 
 module.exports = {
   chat: async (req, res, next) => {
-    const { messages } = req.body;
-
-    if (messages.length === 0) {
-      res.send({ role: 'assistant', content: '' });
-      return;
-    }
-
     try {
+      const { messages } = await chatSchema.validateAsync(req.body);
+
+      if (messages.length === 0) {
+        res.send({ role: 'assistant', content: '' });
+        return;
+      }
+
       const response = await aiChatRequest(messages);
       res.send({ role: 'assistant', content: response });
     } catch (error) {
-      console.error(error);
-      next(error);
+      // console.error(error);
+      if (error.isJoi !== true) {
+        return next(
+          createError.InternalServerError("Couldn't retrieve answer.")
+        );
+      }
+      next(createError.BadRequest('Invalid request format'));
+      // next(error);
     }
   },
   // message: async (req, res, next) => {
