@@ -18,6 +18,17 @@ function validateStringMaxWords(maxWords) {
   };
 }
 
+const chatSchema = Joi.object({
+  messages: Joi.array()
+    .items(
+      Joi.object({
+        role: Joi.string().valid('user', 'assistant' /*, 'system'*/).required(),
+        content: Joi.string().min(1).required(),
+      })
+    )
+    .empty(),
+});
+
 const messageSchema = Joi.object({
   message: Joi.string().min(1).max(2500).custom(validateStringMaxWords(500)), //TODO! count words (up to 500)
   topic_id: Joi.alternatives().try(Joi.objectId(), Joi.allow(null)).required(),
@@ -27,4 +38,4 @@ const topicSchema = Joi.object({
   topic_id: Joi.alternatives().try(Joi.objectId(), Joi.allow(null)).required(),
 });
 
-module.exports = { authSchema, messageSchema, topicSchema };
+module.exports = { authSchema, chatSchema, messageSchema, topicSchema };
