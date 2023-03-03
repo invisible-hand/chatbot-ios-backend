@@ -14,6 +14,12 @@ const { aiChatRequest } = require('../utils/ai_chat_request');
 module.exports = {
   chat: async (req, res, next) => {
     const { messages } = req.body;
+
+    if ((messages.length = 0)) {
+      res.send({});
+      return;
+    }
+
     try {
       const response = await aiChatRequest(messages);
       res.send({ role: 'assistant', content: response });
