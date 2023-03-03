@@ -16,7 +16,7 @@ module.exports = {
     const { messages } = req.body;
 
     if (messages.length === 0) {
-      res.send({});
+      res.send({ role: 'assistant', content: '' });
       return;
     }
 
